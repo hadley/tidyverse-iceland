@@ -1,0 +1,225 @@
+---
+format:
+  revealjs: 
+    theme: [default, hadley.scss]
+---
+
+# Welcome!
+
+<!--# Workshop page at https://www.nsm2022.is/welcome-to-tidyverse  -->
+
+```{r, include = FALSE}
+options(width = 71, pillar.print_max = 8)
+knitr::opts_chunk$set(comment = "#>", collapse = TRUE, echo = TRUE)
+```
+
+## What is data science?
+
+![](images/data-science.png)
+
+## What is the tidyverse?
+
+![](images/Screen%20Shot%202022-08-16%20at%2010.21.48.png){width="597"}
+
+## What you'll learn today
+
+-   Basics of RStudio and R.
+-   How to use ggplot2 for data visualisation.
+-   How to use dplyr for data manipulation.
+-   This course is excerpted from <https://carpentries-incubator.github.io/r-tidyverse-4-datasets/index.html>.
+-   Which is covers a small part of <https://r4ds.hadley.nz>.
+
+## Quick RStudio tour
+
+-   Bottom-left: Console. The place for interactive exploration.
+-   Top-left: Script editor. Use Ctrl/Cmd + Enter to run current command.
+-   Bottom-right: Look for plots here
+-   Top-right: not today.
+
+## Get started
+
+``` r
+install.packages(c("palmerpenguins", "tidyverse"))
+```
+
+While that's running, introduce yourself to your neighbours.
+
+Raise a green flag when you're done.
+Raise a red flag if something has gone wrong.
+
+## Packages, data, help
+
+-   `install.packages()` downloads packages on to your computer.
+-   `library()` "activates" a package in your current session so you can use it
+-   Get help with `?`
+
+------------------------------------------------------------------------
+
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+
+penguins
+cli:::ruler()
+```
+
+```{r, eval = FALSE}
+?penguins
+```
+
+## Your turn
+
+Answer the following questions by looking at the data and reading the help:
+
+-   How many rows and columns in `penguins`?
+-   What do the abbreviations `fct`, `dbl`, `int` stand for?
+-   Is there any missing data?
+
+# Visualisation with ggplot2
+
+## Do penguins with deep beaks also have long beaks?
+
+```{r}
+ggplot(data = penguins) + 
+  geom_point(
+    mapping = aes(x = bill_depth_mm, y = bill_length_mm)
+  )
+```
+
+------------------------------------------------------------------------
+
+![](https://raw.githubusercontent.com/allisonhorst/palmerpenguins/main/man/figures/culmen_depth.png){width="413"}
+
+## Your turn
+
+-   How are bill depth and weight related? What about flipper length and bill length?
+-   Have any of these variables changed over time?
+-   What happens if you replace `geom_point()` with `geom_line()`? Or `geom_col()`?
+-   Advanced: can you guess how to colour the points by `sex`? Or by `species`?
+
+## Mapping aesthetics
+
+```{r}
+ggplot(data = penguins) + 
+  geom_point(
+    mapping = aes(
+      x = bill_depth_mm, 
+      y = bill_length_mm,
+      colour = species)
+  )
+```
+
+## Your turn
+
+-   What happens if you map species to `shape`? What if you map species to both `colour` and `shape`?
+-   What happens if you map different variables to `shape` and `colour`?
+
+## Setting aesthetics
+
+-   Mapping takes a variable and creates a scale, which generates a legend/axis. It's always inside `aes()`.
+-   Setting takes a value and sets it directly. See possible values at <https://ggplot2.tidyverse.org/articles/ggplot2-specs.html>. It's always outside `aes()`.
+-   All aesthetics can be mapped or set (not at the same time). But some, like `alpha`, are almost always set.
+
+## What's wrong here?
+
+```{r}
+ggplot(data = penguins) + 
+  geom_point(
+    mapping = aes(
+      x = bill_depth_mm, 
+      y = bill_length_mm,
+      colour = "blue")
+  )
+```
+
+## Your turn
+
+-   Change the points to be large translucent red diamonds.
+-   What happens if you try and set and map `colour`? Which wins?
+-   What other aesthetics does `geom_point()` understand? Read `?geom_point` to see.
+
+## Geoms
+
+-   geom = geometric object
+-   ggplot2 has \~50 built-in, and many extension packages provide others
+-   <https://ggplot2.tidyverse.org/reference/index.html>
+-   We'll take a quick look at `geom_smooth()`, `geom_boxplot()`, and `geom_freqpoly()`.
+
+## `geom_smooth()`
+
+```{r}
+ggplot(data = penguins) + 
+  geom_point(mapping = aes(x = bill_depth_mm, y = bill_length_mm)) +
+  geom_smooth(mapping = aes(x = bill_depth_mm, y = bill_length_mm))
+```
+
+## Instead, move aesthetics into ggplot call
+
+```{r}
+ggplot(penguins, mapping = aes(bill_depth_mm, bill_length_mm)) + 
+  geom_point() +
+  geom_smooth()
+```
+
+## Your turn
+
+-   What happens if you map `species` to `colour`?
+-   Can you fit a linear model instead? (`?geom_smooth()`)
+-   Can you turn the standard errors off?
+
+## `geom_boxplot()`
+
+```{r}
+ggplot(penguins) + 
+  geom_boxplot(aes(species, bill_depth_mm))
+```
+
+## geom_freqpoly()
+
+```{r}
+ggplot(penguins) + 
+  geom_freqpoly(aes(bill_depth_mm))
+```
+
+------------------------------------------------------------------------
+
+```{r}
+ggplot(penguins) + 
+  geom_freqpoly(aes(bill_depth_mm), binwidth = .2)
+```
+
+------------------------------------------------------------------------
+
+```{r}
+ggplot(penguins) + 
+  geom_freqpoly(aes(bill_depth_mm, colour = species), binwidth = 1)
+```
+
+------------------------------------------------------------------------
+
+```{r}
+ggplot(penguins) + 
+  geom_freqpoly(aes(bill_depth_mm, after_stat(density), colour = species), binwidth = 1)
+```
+
+## Faceting
+
+-   Grouping with aesthetics is useful for relatively small numbers
+-   Alternative is to group in space.
+-   Called "faceting" in ggplot2. Also known as small multiple, sub-plots, panels...
+-   Super useful to display different subsets of the data
+
+## facet_wrap()
+
+```{r}
+ggplot(penguins, aes())
+```
+
+## Where next?
+
+-   Combining geoms + aesthetics + faceting gets you a very long way.
+-   Scales control how exactly data values are mapped to aesthetic properties.
+-   Themes control the appearance of the non-data elements.
+-   Coordinate systems allow you to do maps or use polar coordinates.
+-   Theory gives you a better sense of how all the pieces fit together.
+-   Even more detail in <https://ggplot2-book.org>.

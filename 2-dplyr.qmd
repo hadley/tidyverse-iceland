@@ -1,0 +1,234 @@
+---
+format:
+  revealjs: 
+    theme: [default, hadley.scss]
+---
+
+# Data manipulation with dplyr
+
+## Getting started
+
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+```
+
+## Big picture
+
+-   dplyr provides a selection of verbs that all take a data frame as input, do something to it and return a modified data frame.
+-   Each verb is simple in isolation; you solve complex problems by chaining them together with the pipe (`|>` / `%>%`).
+-   Learn more in <https://r4ds.hadley.nz/data-transform.html>.
+
+## Selecting columns with `select()`
+
+-   We're not going to cover it because `penguins` already has a small column of columns.
+-   But it's super useful when you have a very wide dataset and want to zoom in on the variables you care about.
+
+## Filtering rows with `filter()`
+
+-   `filter(df, condition)` returns all rows where `condition` evaluates to `TRUE`
+-   How do you make `TRUE`s and `FALSE`s? (collectively called a logical vector)
+    -   Comparisons: `body_mass_g < 3000`, `species == "Chinstrap"`, ...
+    -   Select one of multiple options `%in%`: `island %in% c("Dream", "Torgersen")`
+    -   Combine with logical operators: `&` (and), `|` (or), and `!` (not)
+-   More options at <https://r4ds.hadley.nz/logicals.html>. 
+
+## Your turn
+
+-   Find all measurements made after 2007
+-   Find all male Chinstrap penguins
+-   Find all penguins that have a bill over 50 mm long or weight more than 5kg.
+
+## Common problems
+
+-   Console shows `+` and nothing is happening --- you're missing a `"` or a `)`. Easiest to press `Esc` and start again
+-   We detected a named input --- R uses `==` for comparison, not `=`
+-   What else?
+
+## Missing values
+
+What's going on?
+
+```{r}
+filter(penguins, sex == NA)
+```
+
+Easier to understand with a concrete example:
+
+```{r}
+hadley_height <- NA
+jenny_height <- NA
+hadley_height == jenny_height
+```
+
+## The solution: `is.na()`
+
+```{r}
+filter(penguins, is.na(sex))
+```
+
+## Sorting the rows
+
+-   Use `arrange(df, variable)` to sort by `variable`, from smallest to largest.
+-   Use `arrange(df, desc(variable))` to sort by `variable`, from largest to smallest.
+-   Use `arrange(df, var1, var2)` to sort by `var1` then `var2`
+
+## Your turn
+
+-   Find the heaviest penguins
+-   Find the penguins with the shortest bills
+
+## Filtering and sorting
+
+-   What happens if you want to filter AND sort?
+-   You need the pipe `%>%` or `|>`.
+-   Pronounced then
+-   Easiest way to type is to use the `Alt + -` shortcut
+
+------------------------------------------------------------------------
+
+```{r}
+penguins |> 
+  filter(sex == "male") |> 
+  arrange(desc(body_mass_g))
+
+# Can also use with ggplot2!
+penguins |> 
+  filter(sex == "male") |>
+  ggplot(aes(bill_length_mm)) +
+  geom_histogram(binwidth = 0.5)
+```
+
+## Adding new variables
+
+-   `mutate(df, new_var = computation)` creates a new variable called `new_var` from the `computation`
+-   Can create multiple variables in one step.
+-   Arithmetic: `+`, `*`, `-`, `/`, `^`
+-   Conditional: `if_else(logical_condition, true, false)`
+-   Many other options in <https://r4ds.hadley.nz/numbers.html>
+
+------------------------------------------------------------------------
+
+```{r}
+penguins |> 
+  mutate(
+    bill_ratio = bill_length_mm / bill_depth_mm,
+    size = if_else(body_mass_g > 400, "big", "small")
+  )
+```
+
+## Uhoh
+
+-   We can't see the columns we just created
+-   Options:
+    -   Get a bigger screen 😆
+
+    -   `|> View()`
+
+    -   `.keep = "used"`
+
+## Your turn
+
+-   Create `bill_length_cm`, `bill_depth_cm`, and `body_mass_kg`
+-   Create a new `bill_type` variable that is "skinny" if `bill_ratio` \< 0.5 and "stumpy" if not.
+-   Explore the different ways to view the computation
+
+## Creating objects
+
+```{r, error = TRUE}
+penguins |> 
+  mutate(
+    bill_ratio = bill_length_mm / bill_depth_mm,
+    size = if_else(body_mass_g > 400, "big", "small")
+  )
+
+penguins |> 
+  arrange(bill_ratio)
+```
+
+------------------------------------------------------------------------
+
+dplyr functions return a new data frame.
+They never modify the input or automatically save the output.
+You need to save yourself with `<-`:
+
+```{r}
+penguins2 <- penguins |> 
+  mutate(
+    bill_ratio = bill_length_mm / bill_depth_mm,
+    size = if_else(body_mass_g > 400, "big", "small")
+  )
+
+penguins2 |> 
+  arrange(bill_ratio)
+```
+
+## Grouped summaries
+
+```{r}
+penguins |> count(species)
+penguins |> count(island)
+penguins |> count(species, island)
+```
+
+How do we do this for our own summaries?
+
+------------------------------------------------------------------------
+
+```{r}
+penguins |> 
+  group_by(island) |> 
+  summarise(n = n())
+```
+
+## Summary options
+
+-   `n()`, `n_distinct(variable)`
+-   `mean(variable)`, `sd(variable)`
+-   `min(variable)`, `median(variable)`, `quantile(variable, 0.75)`, `max(variable)`
+-   <https://r4ds.hadley.nz/numbers.html#summaries>
+
+## NA values strike again!
+
+```{r}
+penguins |> 
+  group_by(island) |> 
+  summarise(body_mass_g = mean(body_mass_g))
+
+penguins |> 
+  group_by(island) |> 
+  summarise(body_mass_g = mean(body_mass_g, na.rm = TRUE))
+```
+
+## Your turn
+
+-   How many species are there on each island? How many islands does each species occupy?
+-   How does the average bill size of each species vary?
+-   Compare the 25th and 75th quantile of `body_mass_g` for each species.
+
+## Grouped mutates
+
+```{r}
+penguins |> 
+  group_by(species) |> 
+  filter(!is.na(body_mass_g)) |> 
+  mutate(
+    body_mass_z = (body_mass_g - mean(body_mass_g)) / sd(body_mass_g)
+  ) |> 
+  ggplot(aes(body_mass_z, colour = species)) +
+  geom_freqpoly(binwidth = 0.25)
+```
+
+## Where next with dplyr?
+
+-   Other functions like `select()`, `distinct()`, `rename()`, `relocate()`, `slice_*`
+-   Functions that work with multiple tables: `left_join()`, `semi_join()`, ...
+-   Other types of variables: strings, factors, dates, ...
+
+## Where next with the tidyverse?
+
+-   Data import: csv (**readr**), SAS/SPSS/Stata (**haven**), spreadsheets (**readxl**, **googlesheets4**), databases (**dbplyr**), HTML (**rvest**), ...
+-   Data tidying: get your variables into columns and observations into rows with tidyr.
+-   Communicating: use quarto to mingle prose and code and produce docs, presentations, websites, books, ...
+
+# Thank you!
