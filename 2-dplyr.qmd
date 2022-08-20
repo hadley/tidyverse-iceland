@@ -83,8 +83,9 @@ filter(penguins, is.na(sex))
 
 -   What happens if you want to filter AND sort?
 -   You need the pipe `%>%` or `|>`.
--   Pronounced then
--   Easiest way to type is to use the `Alt + -` shortcut
+-   Pronounced "then"
+-   Easiest way to type is to use the `Cmd + shift + m` shortcut
+-   Use little bunny foofoo or cupcakes to explain the point?
 
 ------------------------------------------------------------------------
 
