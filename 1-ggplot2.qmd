@@ -270,5 +270,5 @@ ggplot(penguins, aes(bill_depth_mm, bill_length_mm)) +
 -   **Scales** control how exactly data values are mapped to aesthetic properties.
 -   **Themes** control the appearance of the non-data elements.
 -   **Coords** (coordinate systems) allow you to do maps or use polar coordinates.
--   Theory/grammar helps you understand how all the pieces fit together.
+-   **Grammar**/theory helps you understand how all the pieces fit together.
 -   Even more detail in <https://ggplot2-book.org>.
