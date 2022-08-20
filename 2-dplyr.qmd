@@ -155,7 +155,13 @@ penguins |>
 
 dplyr functions return a new data frame.
 They never modify the input or automatically save the output.
-You need to save yourself with `<-`:
+You need to save it yourself with `<-`:
+
+Here's where I often talk about how perverse it is that when you don't save the output, you get to see it, which makes it feel very real.
+But it's gone!
+Poof!
+And if you do save the output, it doesn't print by default, so it can feel like nothing happened.
+Sometimes I mention surround assignment with `()`.
 
 ```{r}
 penguins2 <- penguins |> 
