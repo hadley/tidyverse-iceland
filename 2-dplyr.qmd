@@ -16,7 +16,7 @@ library(palmerpenguins)
 ## Big picture
 
 -   dplyr provides a selection of verbs that all take a data frame as input, do something to it and return a modified data frame.
--   Each verb is simple in isolation; you solve complex problems by chaining them together with the pipe (`|>` / `%>%`).
+-   Each verb is simple in isolation; you solve complex problems by chaining them together with the pipe (`|> in`base R \>= 4.1 or `%>% from magrittr/tidyverse`).
 -   Learn more in <https://r4ds.hadley.nz/data-transform.html>.
 
 ## Selecting columns with `select()`
