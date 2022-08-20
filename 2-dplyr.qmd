@@ -28,9 +28,10 @@ library(palmerpenguins)
 
 -   `filter(df, condition)` returns all rows where `condition` evaluates to `TRUE`
 -   How do you make `TRUE`s and `FALSE`s? (collectively called a logical vector)
-    -   Comparisons: `body_mass_g < 3000`, `species == "Chinstrap"`, ...
-    -   Select one of multiple options `%in%`: `island %in% c("Dream", "Torgersen")`
-    -   Combine with logical operators: `&` (and), `|` (or), and `!` (not)
+    -   Compare: `body_mass_g < 3000`, `species == "Chinstrap"`
+    -   Find one of multiple options: `island %in% c("Dream", "Torgersen")`
+    -   Combine conditions with logical operators: `&` (and), `|` (or)
+    -   Negate a condition: `!` (not)
 -   More options at <https://r4ds.hadley.nz/logicals.html>. 
 
 ## Your turn
