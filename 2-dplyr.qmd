@@ -15,26 +15,30 @@ knitr::opts_chunk$set(comment = "#>", collapse = TRUE, echo = TRUE)
 
 ## Getting started
 
-```{r}
+```{r setup}
 library(tidyverse)
 library(palmerpenguins)
 ```
 
 ## Big picture
 
--   dplyr provides a selection of verbs that all take a data frame as input, do something to it and return a modified data frame.
+::: {#incremental}
+-   dplyr provides verbs for data manipulation.
+-   Each verb take a data frame as input, do something to it, and return a new data frame.
 -   Each verb is simple in isolation; you solve complex problems by chaining them together with the pipe (`|>` / `%>%`).
 -   Learn more in <https://r4ds.hadley.nz/data-transform.html>.
+:::
 
 ## Selecting columns with `select()`
 
--   We're not going to cover it because `penguins` already has a small column of columns.
+-   We're going to skip it because `penguins` already has a small number of columns.
 -   But it's super useful when you have a very wide dataset and want to zoom in on the variables you care about.
+-   See `?select` for details
 
 ## Filtering rows with `filter()`
 
 -   `filter(df, condition)` returns all rows where `condition` evaluates to `TRUE`
--   How do you make `TRUE`s and `FALSE`s? (collectively called a logical vector)
+-   How do you make `TRUE`s and `FALSE`s? (which collectively make a logical vector).
     -   Comparisons: `body_mass_g < 3000`, `species == "Chinstrap"`, ...
     -   Select one of multiple options `%in%`: `island %in% c("Dream", "Torgersen")`
     -   Combine with logical operators: `&` (and), `|` (or), and `!` (not)
@@ -42,9 +46,9 @@ library(palmerpenguins)
 
 ## Your turn
 
--   Find all measurements made after 2007
--   Find all male Chinstrap penguins
--   Find all penguins that have a bill over 50 mm long or weight more than 5kg.
+-   Find all penguins measured after 2007.
+-   Find all male Chinstrap penguins.
+-   Find all penguins that have a bill length \>50 mm or a weight \> 5kg.
 
 ## Missing values
 
@@ -54,9 +58,12 @@ What's going on?
 filter(penguins, sex == NA)
 ```
 
+------------------------------------------------------------------------
+
 Easier to understand with a concrete example:
 
 ```{r}
+#| code-line-numbers: 1|2|3,4
 hadley_height <- NA
 jenny_height <- NA
 hadley_height == jenny_height
@@ -72,19 +79,21 @@ filter(penguins, is.na(sex))
 
 -   Use `arrange(df, variable)` to sort by `variable`, from smallest to largest.
 -   Use `arrange(df, desc(variable))` to sort by `variable`, from largest to smallest.
--   Use `arrange(df, var1, var2)` to sort by `var1` then `var2`
+-   Use `arrange(df, var1, var2)` to sort by `var1` then `var2`.
 
 ## Your turn
 
 -   Find the heaviest penguins
 -   Find the penguins with the shortest bills
 
-## Filtering and sorting
+## Filtering ***and*** sorting
 
+::: incremental
 -   What happens if you want to filter AND sort?
--   You need the pipe `%>%` or `|>`.
--   Pronounced then
--   Easiest way to type is to use the `Alt + -` shortcut
+-   Easiest solution is the pipe, `%>%` or `|>`.
+-   Pronounced then.
+-   Easiest way to type is to press `Alt + -`.
+:::
 
 ------------------------------------------------------------------------
 
@@ -92,7 +101,11 @@ filter(penguins, is.na(sex))
 penguins |> 
   filter(sex == "male") |> 
   arrange(desc(body_mass_g))
+```
 
+------------------------------------------------------------------------
+
+```{r}
 # Can also use with ggplot2!
 penguins |> 
   filter(sex == "male") |>
@@ -102,11 +115,19 @@ penguins |>
 
 ## Adding new variables
 
--   `mutate(df, new_var = computation)` creates a new variable called `new_var` from the `computation`
+::: incremental
+-   `df |> mutate(new_var = computation)` creates a new variable called `new_var` from the `computation`.
+
 -   Can create multiple variables in one step.
--   Arithmetic: `+`, `*`, `-`, `/`, `^`
--   Conditional: `if_else(logical_condition, true, false)`
--   Many other options in <https://r4ds.hadley.nz/numbers.html>
+
+-   Computations:
+
+    -   Arithmetic: `+`, `*`, `-`, `/`, `^`
+
+    -   Conditional: `if_else(logical_condition, true, false)`
+
+    -   Many other options in <https://r4ds.hadley.nz/numbers.html>
+:::
 
 ------------------------------------------------------------------------
 
@@ -128,15 +149,21 @@ penguins |>
 
     -   `.keep = "used"`
 
+    -   `relocate()`
+
+    -   `select()` (which we skipped earlier)
+
 ## Your turn
 
--   Create `bill_length_cm`, `bill_depth_cm`, and `body_mass_kg`
+-   Create `bill_length_cm`, `bill_depth_cm`, and `body_mass_kg`.
 -   Create a new `bill_type` variable that is "skinny" if `bill_ratio` \< 0.5 and "stumpy" if not.
--   Explore the different ways to view the computation
+-   Explore the different ways to view the computation.
 
 ## Creating objects
 
-```{r, error = TRUE}
+```{r}
+#| error: true
+#| results: false
 penguins |> 
   mutate(
     bill_ratio = bill_length_mm / bill_depth_mm,
@@ -154,6 +181,7 @@ They never modify the input or automatically save the output.
 You need to save yourself with `<-`:
 
 ```{r}
+#| results: false
 penguins2 <- penguins |> 
   mutate(
     bill_ratio = bill_length_mm / bill_depth_mm,
@@ -167,6 +195,7 @@ penguins2 |>
 ## Grouped summaries
 
 ```{r}
+#| results: false
 penguins |> count(species)
 penguins |> count(island)
 penguins |> count(species, island)
@@ -174,7 +203,7 @@ penguins |> count(species, island)
 
 How do we do this for our own summaries?
 
-------------------------------------------------------------------------
+## Count is just a shortcut
 
 ```{r}
 penguins |> 
@@ -196,6 +225,11 @@ penguins |>
   group_by(island) |> 
   summarise(body_mass_g = mean(body_mass_g))
 
+```
+
+## Fortunately most summary functions come with `na.rm`
+
+```{r}
 penguins |> 
   group_by(island) |> 
   summarise(body_mass_g = mean(body_mass_g, na.rm = TRUE))
@@ -210,6 +244,8 @@ penguins |>
 ## Grouped mutates
 
 ```{r}
+#| output-location: slide
+
 penguins |> 
   group_by(species) |> 
   filter(!is.na(body_mass_g)) |> 

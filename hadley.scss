@@ -1,5 +1,9 @@
 /*-- scss:rules --*/
 
+.reveal pre.sourceCode code {
+   max-height: 100%; /* quarto default is 500px */
+}
+
 // Make code blocks larger and inline code smaller
 .reveal pre { font-size: 0.8em;}
 .reveal code { font-size: 87%;}
