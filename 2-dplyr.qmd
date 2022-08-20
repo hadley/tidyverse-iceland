@@ -21,8 +21,8 @@ library(palmerpenguins)
 
 ## Selecting columns with `select()`
 
--   We're not going to cover it because `penguins` already has a small column of columns.
--   But it's super useful when you have a very wide dataset and want to zoom in on the variables you care about.
+-   We're not going to cover it because `penguins` already has a small set of columns.
+-   But `select()` is super useful when you have a very wide dataset and want to zoom in on the variables you care about.
 
 ## Filtering rows with `filter()`
 
