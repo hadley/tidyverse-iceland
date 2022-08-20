@@ -2,6 +2,7 @@
 format:
   revealjs: 
     theme: [default, hadley.scss]
+    width: 1200
 ---
 
 # Welcome!
@@ -9,7 +10,7 @@ format:
 <!--# Workshop page at https://www.nsm2022.is/welcome-to-tidyverse  -->
 
 ```{r, include = FALSE}
-options(width = 71, pillar.print_max = 8)
+options(width = 64, pillar.print_max = 8)
 knitr::opts_chunk$set(comment = "#>", collapse = TRUE, echo = TRUE)
 ```
 
@@ -21,12 +22,26 @@ knitr::opts_chunk$set(comment = "#>", collapse = TRUE, echo = TRUE)
 
 ![](images/Screen%20Shot%202022-08-16%20at%2010.21.48.png){width="597"}
 
-## What you'll learn today
+## What you'll do today
 
--   Basics of RStudio and R.
--   How to use ggplot2 for data visualisation.
--   How to use dplyr for data manipulation.
--   This course is excerpted from <https://carpentries-incubator.github.io/r-tidyverse-4-datasets/index.html>.
+::: incremental
+-   Learn basics of RStudio and R.
+
+-   Use ggplot2 for data visualisation.
+
+-   Use dplyr for data manipulation.
+
+-   Make mistakes with help nearby.
+
+-   Have fun!
+:::
+
+------------------------------------------------------------------------
+
+-   You can find all this content at <https://github.com/hadley/tidyverse-iceland>
+
+-   This course is an excerpt from <https://carpentries-incubator.github.io/r-tidyverse-4-datasets/index.html>.
+
 -   Which is covers a small part of <https://r4ds.hadley.nz>.
 
 ## Quick RStudio tour
@@ -55,15 +70,12 @@ Raise a red flag if something has gone wrong.
 
 ------------------------------------------------------------------------
 
-```{r}
+```{r setup}
+#| results: hide
 library(tidyverse)
 library(palmerpenguins)
 
 penguins
-cli:::ruler()
-```
-
-```{r, eval = FALSE}
 ?penguins
 ```
 
@@ -79,56 +91,69 @@ Answer the following questions by looking at the data and reading the help:
 
 ## Do penguins with deep beaks also have long beaks?
 
+![](https://raw.githubusercontent.com/allisonhorst/palmerpenguins/main/man/figures/culmen_depth.png){width="413"}
+
+------------------------------------------------------------------------
+
 ```{r}
+#| output-location: fragment
+#| code-line-numbers: "1|2|3"
+
 ggplot(data = penguins) + 
   geom_point(
     mapping = aes(x = bill_depth_mm, y = bill_length_mm)
   )
 ```
 
-------------------------------------------------------------------------
-
-![](https://raw.githubusercontent.com/allisonhorst/palmerpenguins/main/man/figures/culmen_depth.png){width="413"}
-
 ## Your turn
 
 -   How are bill depth and weight related? What about flipper length and bill length?
 -   Have any of these variables changed over time?
 -   What happens if you replace `geom_point()` with `geom_line()`? Or `geom_col()`?
--   Advanced: can you guess how to colour the points by `sex`? Or by `species`?
+-   Advanced: can you guess how to colour the points by `species`? Or map the the shape to `sex`?
+
+## Common problems
+
+-   Console shows `+` and nothing is happening --- you're missing a `"` or a `)`. Easiest to press `Esc` and start again.
+-   Forgetting to put the variable name inside `aes()`.
+-   What else?
 
 ## Mapping aesthetics
 
 ```{r}
+#| output-location: fragment
 ggplot(data = penguins) + 
   geom_point(
     mapping = aes(
       x = bill_depth_mm, 
       y = bill_length_mm,
-      colour = species)
+      colour = species
+    )
   )
 ```
 
 ## Your turn
 
--   What happens if you map species to `shape`? What if you map species to both `colour` and `shape`?
+-   What happens if you map `bill_depth_mm` to `shape`? What about `species`? What if you map `species` to both `colour` and `shape`?
 -   What happens if you map different variables to `shape` and `colour`?
 
 ## Setting aesthetics
 
--   Mapping takes a variable and creates a scale, which generates a legend/axis. It's always inside `aes()`.
--   Setting takes a value and sets it directly. See possible values at <https://ggplot2.tidyverse.org/articles/ggplot2-specs.html>. It's always outside `aes()`.
--   All aesthetics can be mapped or set (not at the same time). But some, like `alpha`, are almost always set.
+-   Mapping takes a variable and creates a scale, translates the data to the aesthetic property and generates a legend/axis. Mapping happens inside `aes()`.
+-   Setting provides a aesthetic value to use directly. See possible values at <https://ggplot2.tidyverse.org/articles/ggplot2-specs.html>. Setting happens outside `aes()`.
+-   All aesthetics can be mapped or set (but not at the same time). But some, like `alpha`, are almost always set.
 
 ## What's wrong here?
 
 ```{r}
+#| output-location: column
 ggplot(data = penguins) + 
   geom_point(
     mapping = aes(
       x = bill_depth_mm, 
       y = bill_length_mm,
-      colour = "blue")
+      colour = "blue"
+    )
   )
 ```
 
@@ -156,7 +181,19 @@ ggplot(data = penguins) +
 ## Instead, move aesthetics into ggplot call
 
 ```{r}
-ggplot(penguins, mapping = aes(bill_depth_mm, bill_length_mm)) + 
+ggplot(data = penguins, mapping = aes(x = bill_depth_mm, y = bill_length_mm)) + 
+  geom_point() +
+  geom_smooth()
+```
+
+------------------------------------------------------------------------
+
+I usually omit the names for `data`, `mapping`, `x`, and `y` because they're used so commonly.
+I expect people familiar with ggplot2 to remember that these are the first arguments to `ggplot()` and `aes()`.
+
+```{r}
+#| eval: false
+ggplot(penguins, aes(bill_depth_mm, bill_length_mm)) + 
   geom_point() +
   geom_smooth()
 ```
@@ -164,7 +201,8 @@ ggplot(penguins, mapping = aes(bill_depth_mm, bill_length_mm)) +
 ## Your turn
 
 -   What happens if you map `species` to `colour`?
--   Can you fit a linear model instead? (`?geom_smooth()`)
+-   Map `species` to the special `group` aesthetic. Can you guess what this aesthetic does?
+-   Can you fit a linear model instead of a loess? (Hint: read the help.)
 -   Can you turn the standard errors off?
 
 ## `geom_boxplot()`
@@ -174,7 +212,7 @@ ggplot(penguins) +
   geom_boxplot(aes(species, bill_depth_mm))
 ```
 
-## geom_freqpoly()
+## `geom_freqpoly()`
 
 ```{r}
 ggplot(penguins) + 
@@ -212,14 +250,25 @@ ggplot(penguins) +
 ## facet_wrap()
 
 ```{r}
-ggplot(penguins, aes())
+ggplot(penguins, aes(bill_depth_mm, bill_length_mm)) + 
+  geom_point() + 
+  facet_wrap(~ island)
+```
+
+------------------------------------------------------------------------
+
+```{r}
+ggplot(penguins, aes(bill_depth_mm, bill_length_mm)) + 
+  geom_point(aes(colour = island)) + 
+  gghighlight::gghighlight() + 
+  facet_wrap(~ island)
 ```
 
 ## Where next?
 
 -   Combining geoms + aesthetics + faceting gets you a very long way.
--   Scales control how exactly data values are mapped to aesthetic properties.
--   Themes control the appearance of the non-data elements.
--   Coordinate systems allow you to do maps or use polar coordinates.
--   Theory gives you a better sense of how all the pieces fit together.
+-   **Scales** control how exactly data values are mapped to aesthetic properties.
+-   **Themes** control the appearance of the non-data elements.
+-   **Coords** (coordinate systems) allow you to do maps or use polar coordinates.
+-   Theory/grammar helps you understand how all the pieces fit together.
 -   Even more detail in <https://ggplot2-book.org>.

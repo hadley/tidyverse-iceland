@@ -2,9 +2,16 @@
 format:
   revealjs: 
     theme: [default, hadley.scss]
+    width: 1200
 ---
 
 # Data manipulation with dplyr
+
+```{r}
+#| include: false
+options(width = 64, pillar.print_max = 8)
+knitr::opts_chunk$set(comment = "#>", collapse = TRUE, echo = TRUE)
+```
 
 ## Getting started
 
@@ -38,12 +45,6 @@ library(palmerpenguins)
 -   Find all measurements made after 2007
 -   Find all male Chinstrap penguins
 -   Find all penguins that have a bill over 50 mm long or weight more than 5kg.
-
-## Common problems
-
--   Console shows `+` and nothing is happening --- you're missing a `"` or a `)`. Easiest to press `Esc` and start again
--   We detected a named input --- R uses `==` for comparison, not `=`
--   What else?
 
 ## Missing values
 
