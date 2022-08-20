@@ -127,7 +127,10 @@ penguins |>
 
     -   `|> View()`
 
-    -   `.keep = "used"`
+    -   `.keep = "used"` or "unused"?
+
+    -   no love for `.before` and `.after`?
+        I like them
 
 ## Your turn
 
