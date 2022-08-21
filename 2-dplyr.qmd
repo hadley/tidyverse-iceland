@@ -214,7 +214,7 @@ penguins |>
 ## Your turn
 
 -   How many species are there on each island? How many islands does each species occupy?
--   How does the average bill size of each species vary?
+-   How does the average bill LENGTH OR DEPTH?? of each species vary?
 -   Compare the 25th and 75th quantile of `body_mass_g` for each species.
 
 ## Grouped mutates
