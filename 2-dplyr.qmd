@@ -192,7 +192,7 @@ penguins |>
   summarise(n = n())
 ```
 
-## Summary options
+## Summary functions
 
 -   `n()`, `n_distinct(variable)`
 -   `mean(variable)`, `sd(variable)`
