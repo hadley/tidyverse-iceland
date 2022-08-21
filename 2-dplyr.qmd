@@ -227,7 +227,7 @@ penguins |>
     body_mass_z = (body_mass_g - mean(body_mass_g)) / sd(body_mass_g)
   ) |> 
   ggplot(aes(body_mass_z, colour = species)) +
-  geom_freqpoly(binwidth = 0.25)
+  geom_density()
 ```
 
 ## Where next with dplyr?
