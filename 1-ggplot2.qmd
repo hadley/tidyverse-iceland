@@ -95,7 +95,7 @@ ggplot(data = penguins) +
 
 -   How are bill depth and weight related? What about flipper length and bill length?
 -   Have any of these variables changed over time?
--   What happens if you replace `geom_point()` with `geom_line()`? Or `geom_col()`?
+-   What happens if you replace `geom_point()` with `geom_line()`? Or `geom_col()`? What do we have in mind in this and previous bullet point, given the sole ggplot2 call shown thus far?
 -   Advanced: can you guess how to colour the points by `sex`? Or by `species`?
 
 ## Mapping aesthetics
