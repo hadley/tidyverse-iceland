@@ -28,6 +28,7 @@ knitr::opts_chunk$set(comment = "#>", collapse = TRUE, echo = TRUE)
 -   How to use dplyr for data manipulation.
 -   This course is excerpted from <https://carpentries-incubator.github.io/r-tidyverse-4-datasets/index.html>.
 -   Which is covers a small part of <https://r4ds.hadley.nz>.
+-   Feels like the general notion of tibbles (vs data frame) should come up. Maybe when we inspect penguins?
 
 ## Quick RStudio tour
 
@@ -35,6 +36,7 @@ knitr::opts_chunk$set(comment = "#>", collapse = TRUE, echo = TRUE)
 -   Top-left: Script editor. Use Ctrl/Cmd + Enter to run current command.
 -   Bottom-right: Look for plots here
 -   Top-right: not today.
+-   Say something about autocompletion?
 
 ## Get started
 
@@ -60,7 +62,6 @@ library(tidyverse)
 library(palmerpenguins)
 
 penguins
-cli:::ruler()
 ```
 
 ```{r, eval = FALSE}
