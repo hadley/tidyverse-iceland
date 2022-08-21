@@ -32,16 +32,17 @@ library(palmerpenguins)
 ## Selecting columns with `select()`
 
 -   We're going to skip it because `penguins` already has a small number of columns.
--   But it's super useful when you have a very wide dataset and want to zoom in on the variables you care about.
+-   But `select()` is super useful when you have a very wide dataset and want to zoom in on the variables you care about.
 -   See `?select` for details
 
 ## Filtering rows with `filter()`
 
 -   `filter(df, condition)` returns all rows where `condition` evaluates to `TRUE`
 -   How do you make `TRUE`s and `FALSE`s? (which collectively make a logical vector).
-    -   Comparisons: `body_mass_g < 3000`, `species == "Chinstrap"`, ...
-    -   Select one of multiple options `%in%`: `island %in% c("Dream", "Torgersen")`
-    -   Combine with logical operators: `&` (and), `|` (or), and `!` (not)
+    -   Compare: `body_mass_g < 3000`, `species == "Chinstrap"`
+    -   Find one of multiple options: `island %in% c("Dream", "Torgersen")`
+    -   Combine conditions with logical operators: `&` (and), `|` (or)
+    -   Negate a condition: `!` (not)
 -   More options at <https://r4ds.hadley.nz/logicals.html>. 
 
 ## Your turn
@@ -92,7 +93,7 @@ filter(penguins, is.na(sex))
 -   What happens if you want to filter AND sort?
 -   Easiest solution is the pipe, `%>%` or `|>`.
 -   Pronounced then.
--   Easiest way to type is to press `Alt + -`.
+-   Easiest way to type is `Cmd/Ctrl + Shift + M`
 :::
 
 ------------------------------------------------------------------------
@@ -149,9 +150,9 @@ penguins |>
 
     -   `.keep = "used"`
 
-    -   `relocate()`
+    -   `.after = species`
 
-    -   `select()` (which we skipped earlier)
+    -   `relocate()`
 
 ## Your turn
 
@@ -176,9 +177,10 @@ penguins |>
 
 ------------------------------------------------------------------------
 
-dplyr functions return a new data frame.
-They never modify the input or automatically save the output.
-You need to save yourself with `<-`:
+-   dplyr functions return a new data frame.
+-   They never modify the input or automatically save the output.
+-   You need to save yourself with `<-`
+-   This feels perverse: if you don't save it, you see it and it feels real. If you do save it, you never see it, so it might feel like nothing has happened.
 
 ```{r}
 #| results: false
@@ -211,7 +213,7 @@ penguins |>
   summarise(n = n())
 ```
 
-## Summary options
+## Summary functions
 
 -   `n()`, `n_distinct(variable)`
 -   `mean(variable)`, `sd(variable)`
