@@ -5,7 +5,9 @@ format:
     width: 1200
 ---
 
-# Data manipulation with dplyr
+# Data transformation with dplyr
+
+Back at 10:50am!
 
 ```{r}
 #| include: false
@@ -24,7 +26,7 @@ library(palmerpenguins)
 
 ::: {#incremental}
 -   dplyr provides verbs for data manipulation.
--   Each verb take a data frame as input, do something to it, and return a new data frame.
+-   Each verb takes a data frame as input, does something to it, and returns a new data frame.
 -   Each verb is simple in isolation; you solve complex problems by chaining them together with the pipe (`|>` / `%>%`).
 -   Learn more in <https://r4ds.hadley.nz/data-transform.html>.
 :::
@@ -125,7 +127,7 @@ penguins |>
 
     -   Arithmetic: `+`, `*`, `-`, `/`, `^`
 
-    -   Conditional: `if_else(logical_condition, true, false)`
+    -   Conditional: `ifelse(logical_condition, true, false)`
 
     -   Many other options in <https://r4ds.hadley.nz/numbers.html>
 :::

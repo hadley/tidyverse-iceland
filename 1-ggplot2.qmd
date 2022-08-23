@@ -5,7 +5,13 @@ format:
     width: 1200
 ---
 
-# Welcome!
+# Welcome to "Introduction to the tidyverse"!
+
+-   Find code behind the slides at <https://github.com/hadley/tidyverse-iceland/>
+
+-   Make sure you have run:
+
+    `install.packages(c("tidyverse", "palmerpenguins")).`
 
 <!--# Workshop page at https://www.nsm2022.is/welcome-to-tidyverse  -->
 
@@ -59,8 +65,9 @@ install.packages(c("palmerpenguins", "tidyverse"))
 
 While that's running, introduce yourself to your neighbours.
 
-Raise a green flag when you're done.
-Raise a red flag if something has gone wrong.
+Raise a green postit when you're done.
+\
+Raise a ping postit if something has gone wrong.
 
 ## Packages, data, help
 
